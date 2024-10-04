@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket                      = "terraform-ddns-update"
-    key                         = ""
+    key                         = "ddns"
     region                      = "auto"
     skip_credentials_validation = true
     skip_metadata_api_check     = true
