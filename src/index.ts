@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { verifyAuthToken } from "./auth/verifyAuthToken";
 import {
 	getCloudflareDomainId,
 	updateCloudflareDomainWithIp,
@@ -8,17 +9,19 @@ const app = new Hono<{ Bindings: CloudflareBindings }>();
 
 app.get("/update-domain", async (c) => {
 	try {
-		const { API_KEY } = c.env;
+		const token = c.req.header("authorization");
 
-		const headers = c.req.header();
+		if (!token) {
+			return c.json({ error: "Missing token" }, { status: 401 });
+		}
 
-		console.log("headers", headers);
+		const { ok } = verifyAuthToken({ context: c, token });
 
-		const { domain, ip, key } = c.req.query();
-
-		if (key !== API_KEY) {
+		if (!ok) {
 			return c.json({ error: "Invalid API key" }, { status: 401 });
 		}
+
+		const { domain, ip } = c.req.query();
 
 		if (!domain || !ip) {
 			return c.json({ error: "Missing domain or ip" }, { status: 400 });

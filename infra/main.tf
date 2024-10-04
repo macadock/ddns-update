@@ -41,8 +41,13 @@ resource "cloudflare_workers_script" "ddns-update-worker" {
   }
 
   secret_text_binding {
-    name = "API_KEY"
-    text = var.API_KEY
+    name = "USERNAME"
+    text = var.USERNAME
+  }
+
+  secret_text_binding {
+    name = "PASSWORD"
+    text = var.PASSWORD
   }
 }
 

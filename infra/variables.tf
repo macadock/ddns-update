@@ -10,6 +10,10 @@ variable "CLOUDFLARE_ACCOUNT_ID" {
   type = string
 }
 
-variable "API_KEY" {
+variable "USERNAME" {
+  type = string
+}
+
+variable "PASSWORD" {
   type = string
 }
