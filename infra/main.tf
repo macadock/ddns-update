@@ -53,7 +53,7 @@ resource "cloudflare_workers_script" "ddns-update-worker" {
 
 resource "cloudflare_workers_domain" "sonaura-worker-domain" {
   account_id = var.CLOUDFLARE_ACCOUNT_ID
-  hostname   = "domain.barriere.me"
+  hostname   = var.HOSTNAME
   service    = cloudflare_workers_script.ddns-update-worker.name
   zone_id    = var.CLOUDFLARE_ZONE_ID
 }

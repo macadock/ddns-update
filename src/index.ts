@@ -9,7 +9,7 @@ const app = new Hono<{ Bindings: CloudflareBindings }>();
 
 app.get("/update-domain", async (c) => {
 	try {
-		const token = c.req.header("authorization");
+		const token = c.req.header("Authorization");
 
 		if (!token) {
 			return c.json({ error: "Missing token" }, { status: 401 });

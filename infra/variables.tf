@@ -17,3 +17,7 @@ variable "USERNAME" {
 variable "PASSWORD" {
   type = string
 }
+
+variable "HOSTNAME" {
+  type = string
+}
