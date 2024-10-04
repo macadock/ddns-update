@@ -39,6 +39,11 @@ resource "cloudflare_workers_script" "ddns-update-worker" {
     name = "CLOUDFLARE_ZONE_ID"
     text = var.CLOUDFLARE_ZONE_ID
   }
+
+  secret_text_binding {
+    name = "API_KEY"
+    text = var.API_KEY
+  }
 }
 
 resource "cloudflare_workers_domain" "sonaura-worker-domain" {

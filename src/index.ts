@@ -6,16 +6,18 @@ import {
 
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
-app.get("/", (c) => {
-	return c.text("Hello World!");
-});
-
 app.get("/update-domain", async (c) => {
 	try {
-		const { domain, ip } = c.req.query();
+		const { API_KEY } = c.env;
+
+		const { domain, ip, key } = c.req.query();
+
+		if (key !== API_KEY) {
+			return c.json({ error: "Invalid API key" }, { status: 401 });
+		}
 
 		if (!domain || !ip) {
-			throw new Error("Missing domain or ip");
+			return c.json({ error: "Missing domain or ip" }, { status: 400 });
 		}
 
 		const domainId = await getCloudflareDomainId({ domain, context: c });

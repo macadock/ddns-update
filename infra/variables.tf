@@ -9,3 +9,7 @@ variable "CLOUDFLARE_ZONE_ID" {
 variable "CLOUDFLARE_ACCOUNT_ID" {
   type = string
 }
+
+variable "API_KEY" {
+  type = string
+}
