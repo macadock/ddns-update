@@ -27,6 +27,14 @@ jobs:
         run: npm install
         shell: bash
 
+      - name: Build worker
+        id: build-worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --dry-run --minify --outdir dist
+
       - name: Setup Terraform
         id: setup-terraform
         uses: hashicorp/setup-terraform@v3
@@ -48,14 +56,6 @@ jobs:
         run: terraform plan -input=false
         shell: bash
         working-directory: ${{ env.INFRA_DIR }}
-
-      - name: Build worker
-        id: build-worker
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --dry-run --minify --outdir dist
 
       - name: Terraform Apply
         id: terraform-apply
