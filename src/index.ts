@@ -10,6 +10,10 @@ app.get("/update-domain", async (c) => {
 	try {
 		const { API_KEY } = c.env;
 
+		const headers = c.req.header();
+
+		console.log("headers", headers);
+
 		const { domain, ip, key } = c.req.query();
 
 		if (key !== API_KEY) {
