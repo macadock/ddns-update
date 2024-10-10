@@ -1,5 +1,7 @@
+import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { verifyAuthToken } from "./auth/verifyAuthToken";
+import { basicAuth } from "hono/basic-auth";
+import zod from "zod";
 import {
 	getCloudflareDomainId,
 	updateCloudflareDomainWithIp,
@@ -7,34 +9,41 @@ import {
 
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
-app.get("/update-domain", async (c) => {
-	try {
-		const token = c.req.header("Authorization");
+const domainRegex = /\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$/;
 
-		if (!token) {
-			return c.json({ error: "Missing token" }, { status: 401 });
-		}
-
-		const { ok } = verifyAuthToken({ context: c, token });
-
-		if (!ok) {
-			return c.json({ error: "Invalid API key" }, { status: 401 });
-		}
-
-		const { domain, ip } = c.req.query();
-
-		if (!domain || !ip) {
-			return c.json({ error: "Missing domain or ip" }, { status: 400 });
-		}
-
-		const domainId = await getCloudflareDomainId({ domain, context: c });
-
-		await updateCloudflareDomainWithIp({ ip, recordId: domainId, context: c });
-
-		return c.text("Updated");
-	} catch (error: unknown) {
-		return c.json({ error: "Error updating domain" }, { status: 500 });
-	}
+const updateDomainSchema = zod.object({
+	domain: zod.string().regex(domainRegex, "Invalid domain"),
+	ip: zod.string().ip(),
 });
+app.use(
+	basicAuth({
+		verifyUser: (username, password, c) => {
+			const { USERNAME, PASSWORD } = c.env;
+			return username === USERNAME && password === PASSWORD;
+		},
+	}),
+);
+
+app.get(
+	"/update-domain",
+	zValidator("query", updateDomainSchema),
+	async (context) => {
+		try {
+			const { domain, ip } = context.req.valid("query");
+
+			const domainId = await getCloudflareDomainId({ domain, context });
+
+			await updateCloudflareDomainWithIp({
+				recordId: domainId,
+				ip,
+				context,
+			});
+
+			return context.text("ok");
+		} catch (error: unknown) {
+			return context.json({ error: "Error updating domain" }, { status: 500 });
+		}
+	},
+);
 
 export default app;
