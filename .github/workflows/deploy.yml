@@ -4,21 +4,23 @@ on:
     branches:
       - main
 
-env:
-  INFRA_DIR: 'infra'
-  TF_VAR_USERNAME: ${{ secrets.USERNAME }}
-  TF_VAR_PASSWORD: ${{ secrets.PASSWORD }}
-  TF_VAR_HOSTNAME: ${{ secrets.HOSTNAME }}
-  TF_VAR_CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-  TF_VAR_CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-  TF_VAR_CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_ENDPOINT_URL_S3: ${{ secrets.AWS_ENDPOINT_URL_S3 }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    env:
+      INFRA_DIR: 'infra'
+      TF_VAR_USERNAME: ${{ secrets.USERNAME }}
+      TF_VAR_PASSWORD: ${{ secrets.PASSWORD }}
+      TF_VAR_HOSTNAME: ${{ secrets.HOSTNAME }}
+      TF_VAR_CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      TF_VAR_CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      TF_VAR_CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_ENDPOINT_URL_S3: ${{ secrets.AWS_ENDPOINT_URL_S3 }}
+
     steps:
       - name: Checkout
         id: checkout
